@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+
+  db:
+    image: mysql:5.7
+    command: --innodb-use-native-aio=0
+    container_name: db
+    restart: always
+    tty: true
+    volumes:
+      - /home/areco/mysql:/var/lib/mysql
+      - ./mysql-init/1-schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
+      - ./mysql-init/2-data.sql:/docker-entrypoint-initdb.d/2-data.sql
+    environment:
+      - MYSQL_DATABASE=nodedb
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=root
+    networks:
+      - node-network
+
+networks: 
+  node-network:
+    driver: bridge
