@@ -105,3 +105,6 @@ dist
 
 # mysql data
 mysql
+
+# node 
+node_modules
