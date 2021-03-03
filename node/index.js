@@ -62,13 +62,27 @@ getNewName = function(){
 }
 
 app.get('/', (req, res) => {
-
+    console.log('inicio')
     const connection = mysql.createConnection(config);
-    const sql = `INSERT INTO people(name) VALUES ('` + getNewName() + `')`;
-    connection.query(sql);
+    const sql = `INSERT INTO people(name) VALUES (?)`;
+    connection.query(sql, [getNewName()]);
+    console.log('inserido nome')
+    connection.query('SELECT name FROM people ORDER BY name',
+        function (err, results, fields) {
+            if (err) throw err;            
+            var conteudo = '<h1>Full Cycle Rocks!</h1><ul>';
+            for (i = 0; i < results.length; i++) {
+                conteudo += ('<li>' + results[i].name + '</li>');
+                console.log('Row: ' + JSON.stringify(results[i]));
+            }            
+            conteudo += '</ul>';
+            console.log(conteudo);
+            res.send(conteudo)
+            console.log('fim consulta');
+        })
+    console.log('fim')
     connection.end();
 
-    res.send('<h1>Full Cycle Rocks!</h1>')
 })
 
 app.listen(port, () => {
