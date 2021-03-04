@@ -2,12 +2,25 @@ version: '3'
 
 services:
 
+  proxy:
+    image: fvilar/nginx-proxy-node:latest
+    build:
+      context: nginx
+    container_name: proxy
+    networks:
+      - node-network
+    tty: true
+    ports:
+      - "8080:8080"
+    depends_on:
+      - app
+
   app:
-    #image: fvilar/node-names:latest
+    image: fvilar/node-names:latest
     build:
       context: node
     container_name: app    
-    entrypoint: dockerize -wait tcp://db:3306 -timeout 20s docker-entrypoint.sh
+    entrypoint: dockerize -wait tcp://db:3306 -timeout 20s node index.js
     networks:
       - node-network
     volumes:
